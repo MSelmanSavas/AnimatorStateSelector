@@ -39,6 +39,12 @@ If there is no Animator given, it will automatically grab the animator on the ga
 
 ![image](https://user-images.githubusercontent.com/105663238/210183031-9f1b6763-b34f-4398-af9f-67f7845b7cf2.png)
 
+## String and AnimatorStateData List Usage
+
+All of the former explained features can be used in list form too!
+
+![Unity_3SRISbsfUB](https://user-images.githubusercontent.com/105663238/210183404-9bb20791-31bc-490b-b1dc-a068af362c58.png)
+![Code_VdWecUblUL](https://user-images.githubusercontent.com/105663238/210183409-84845e10-c7ec-4833-8c44-fce594616339.png)
 
 
 ## Basic Examples of AnimatorStateData usage:
