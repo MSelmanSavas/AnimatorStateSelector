@@ -6,11 +6,9 @@ using UnityEngine;
 [CustomPropertyDrawer(typeof(SelectAnimationStateAttribute))]
 public class SelectAnimationStateAttributeDrawer : PropertyDrawer
 {
-    bool isInitialized = false;
     SelectAnimationStateAttribute _animationStateAttribute;
     AnimatorController _animatorController;
     Animator _animator;
-
 
     SerializedObject _targetObject;
     SerializedProperty _animatorProperty;
@@ -18,29 +16,12 @@ public class SelectAnimationStateAttributeDrawer : PropertyDrawer
     List<string> _animatorStateNames = new List<string>();
     List<AnimatorState> _animatorStates = new List<AnimatorState>();
 
-    Dictionary<System.Type, System.Func<Rect, SerializedProperty, GUIContent, bool>> _guiDrawersByTypes = new();
-
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        if (!isInitialized)
-            Initialize();
-
         if (fieldInfo.DeclaringType.Equals(typeof(AnimationStateData)) || fieldInfo.DeclaringType.Equals(typeof(List<AnimationStateData>)))
             OnlyAnimationStateDataDrawer(position, property, label);
         else if (fieldInfo.FieldType.Equals(typeof(string)) || fieldInfo.FieldType.Equals(typeof(List<string>)))
             OnlyStringDrawer(position, property, label);
-    }
-
-    void Initialize()
-    {
-        _guiDrawersByTypes.Clear();
-
-        _guiDrawersByTypes.Add(typeof(string), OnlyStringDrawer);
-        _guiDrawersByTypes.Add(typeof(List<string>), OnlyStringDrawer);
-        _guiDrawersByTypes.Add(typeof(AnimationStateData), OnlyAnimationStateDataDrawer);
-        _guiDrawersByTypes.Add(typeof(List<AnimationStateData>), OnlyAnimationStateDataDrawer);
-
-        isInitialized = true;
     }
 
     bool OnlyStringDrawer(Rect position, SerializedProperty property, GUIContent label)
