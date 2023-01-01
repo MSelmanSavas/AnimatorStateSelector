@@ -44,7 +44,7 @@ public class SelectAnimationStateAttributeDrawer : PropertyDrawer
             if (component != null)
                 if (!component.TryGetComponent<Animator>(out _animator))
                 {
-                    EditorGUI.PropertyField(position, property);
+                    EditorGUI.PropertyField(position, property, label);
                     return false;
                 }
 
