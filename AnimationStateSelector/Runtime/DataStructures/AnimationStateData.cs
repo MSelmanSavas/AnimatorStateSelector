@@ -1,11 +1,11 @@
 using UnityEngine;
 
 [System.Serializable]
-public class AnimationStateData
+public class AnimatorStateData
 {
     public Animator SelectedAnimator;
 
-    [SelectAnimationState]
+    [SelectAnimatorState]
     public string Name;
     public int Hash;
 

@@ -3,10 +3,10 @@ using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
 
-[CustomPropertyDrawer(typeof(SelectAnimationStateAttribute))]
+[CustomPropertyDrawer(typeof(SelectAnimatorStateAttribute))]
 public class SelectAnimationStateAttributeDrawer : PropertyDrawer
 {
-    SelectAnimationStateAttribute _animationStateAttribute;
+    SelectAnimatorStateAttribute _animationStateAttribute;
     AnimatorController _animatorController;
     Animator _animator;
 
@@ -18,7 +18,7 @@ public class SelectAnimationStateAttributeDrawer : PropertyDrawer
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
-        if (fieldInfo.DeclaringType.Equals(typeof(AnimationStateData)) || fieldInfo.DeclaringType.Equals(typeof(List<AnimationStateData>)))
+        if (fieldInfo.DeclaringType.Equals(typeof(AnimatorStateData)) || fieldInfo.DeclaringType.Equals(typeof(List<AnimatorStateData>)))
             OnlyAnimationStateDataDrawer(position, property, label);
         else if (fieldInfo.FieldType.Equals(typeof(string)) || fieldInfo.FieldType.Equals(typeof(List<string>)))
             OnlyStringDrawer(position, property, label);
@@ -26,7 +26,7 @@ public class SelectAnimationStateAttributeDrawer : PropertyDrawer
 
     bool OnlyStringDrawer(Rect position, SerializedProperty property, GUIContent label)
     {
-        _animationStateAttribute = attribute as SelectAnimationStateAttribute;
+        _animationStateAttribute = attribute as SelectAnimatorStateAttribute;
 
         if (_animationStateAttribute is null)
         {
@@ -42,19 +42,26 @@ public class SelectAnimationStateAttributeDrawer : PropertyDrawer
             Component component = _targetObject.targetObject as Component;
 
             if (component != null)
+            {
                 if (!component.TryGetComponent<Animator>(out _animator))
                 {
                     EditorGUI.PropertyField(position, property, label);
                     return false;
                 }
-
-            _animatorController = _animator.runtimeAnimatorController as AnimatorController;
+            }
         }
         else
         {
             _animator = _animatorProperty.objectReferenceValue as Animator;
-            _animatorController = _animator.runtimeAnimatorController as AnimatorController;
         }
+
+        if (_animator.runtimeAnimatorController == null)
+        {
+            EditorGUI.PropertyField(position, property, label);
+            return false;
+        }
+
+        _animatorController = _animator.runtimeAnimatorController as AnimatorController;
 
         _animatorStateNames.Clear();
         _animatorStates.Clear();
@@ -90,7 +97,7 @@ public class SelectAnimationStateAttributeDrawer : PropertyDrawer
 
     bool OnlyAnimationStateDataDrawer(Rect position, SerializedProperty property, GUIContent label)
     {
-        _animationStateAttribute = attribute as SelectAnimationStateAttribute;
+        _animationStateAttribute = attribute as SelectAnimatorStateAttribute;
 
         if (_animationStateAttribute is null)
         {
@@ -102,27 +109,34 @@ public class SelectAnimationStateAttributeDrawer : PropertyDrawer
 
         SerializedProperty animationStateDataSP = _targetObject.FindProperty(property.propertyPath.Substring(0, property.propertyPath.LastIndexOf('.')));
 
-        _animatorProperty = animationStateDataSP.FindPropertyRelative(nameof(AnimationStateData.SelectedAnimator));
+        _animatorProperty = animationStateDataSP.FindPropertyRelative(nameof(AnimatorStateData.SelectedAnimator));
 
         if (_animatorProperty is null || _animatorProperty.objectReferenceValue is null)
         {
             Component component = _targetObject.targetObject as Component;
 
             if (component != null)
+            {
                 if (!component.TryGetComponent<Animator>(out _animator))
                 {
-                    EditorGUI.PropertyField(position, property);
+                    EditorGUI.PropertyField(position, property, label);
                     return false;
                 }
-
-            _animatorController = _animator.runtimeAnimatorController as AnimatorController;
+            }
         }
         else
         {
             _animator = _animatorProperty.objectReferenceValue as Animator;
-            _animatorController = _animator.runtimeAnimatorController as AnimatorController;
         }
 
+        if (_animator.runtimeAnimatorController == null)
+        {
+            EditorGUI.PropertyField(position, property, label);
+            return false;
+        }
+
+        _animatorController = _animator.runtimeAnimatorController as AnimatorController;
+        
         _animatorStateNames.Clear();
         _animatorStates.Clear();
 
@@ -158,9 +172,9 @@ public class SelectAnimationStateAttributeDrawer : PropertyDrawer
 
         void SetAnimationStateDatas(UnityEditor.Animations.AnimatorState animatorState)
         {
-            animationStateDataSP.FindPropertyRelative(nameof(AnimationStateData.Name)).stringValue = property.stringValue;
-            animationStateDataSP.FindPropertyRelative(nameof(AnimationStateData.Hash)).intValue = Animator.StringToHash(property.stringValue);
-            animationStateDataSP.FindPropertyRelative(nameof(AnimationStateData.Clip)).objectReferenceValue = animatorState.motion;
+            animationStateDataSP.FindPropertyRelative(nameof(AnimatorStateData.Name)).stringValue = property.stringValue;
+            animationStateDataSP.FindPropertyRelative(nameof(AnimatorStateData.Hash)).intValue = Animator.StringToHash(property.stringValue);
+            animationStateDataSP.FindPropertyRelative(nameof(AnimatorStateData.Clip)).objectReferenceValue = animatorState.motion;
         }
     }
 }
