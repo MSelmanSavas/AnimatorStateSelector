@@ -1,5 +1,5 @@
 # AnimationStateSelector
-Easy access for animator state selection.
+Easy access for animator state selection. For Unity 2021.3+!
 
 This tool can be used for selecting animation state names in editor time to be used in runtime.
 This can be used for basic string names for selecting animator states, or it can be used with its custom AnimatorStateData class for more info and easy access to animator state info.
